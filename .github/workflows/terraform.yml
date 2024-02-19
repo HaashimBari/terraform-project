@@ -51,5 +51,5 @@ jobs:
     - name: Terraform Destroy
       run: |
         echo "Running Terraform Destroy"
-        terraform destroy
+        terraform destroy -auto-approve
   
