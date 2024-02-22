@@ -7,6 +7,16 @@ terraform {
   }
 }
 
+terraform {
+  backend "s3" {
+    bucket = "teraform-state-haashim"
+    key    = "global/s3/terraform.tfstate"
+    region = "eu-west-1"
+    dynamodb_table = "terraform_state_locking"
+    encrypt = true
+  }
+}
+
 resource "aws_vpc" "prod-vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -124,5 +134,36 @@ resource "aws_instance" "example-ec2" {
 
   tags = {
     Name = "prod-ec2"
+  }
+}
+
+resource aws_s3_bucket teraform_state {
+  bucket = "teraform-state-haashim"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_locks" {
+  name = "terraform_state_locking"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
   }
 }
