@@ -7,15 +7,15 @@ terraform {
   }
 }
 
-# terraform {
-#   backend "s3" {
-#     bucket = "teraform-state-haashim"
-#     key    = "global/s3/terraform.tfstate"
-#     region = "eu-west-1"
-#     dynamodb_table = "terraform_state_locking"
-#     encrypt = true
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket = "teraform-state-haashim"
+    key    = "global/s3/terraform.tfstate"
+    region = "eu-west-1"
+    dynamodb_table = "terraform_state_locking"
+    encrypt = true
+  }
+}
 
 resource "aws_vpc" "prod-vpc" {
   cidr_block = "10.0.0.0/16"
@@ -115,11 +115,19 @@ resource "aws_security_group" "prod-SG" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+
+    egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 }
 
 resource "aws_instance" "example-ec2" {
-  ami           = "ami-0cf10cdf9fcd62d37"
-  instance_type = "t2.micro"
+  ami           = "ami-0f5ecca86cd7303b0"
+  instance_type = "t4g.micro"
   associate_public_ip_address = "true"
   subnet_id = aws_subnet.public-subnet-1.id
   security_groups = [aws_security_group.prod-SG.id]
@@ -127,9 +135,11 @@ resource "aws_instance" "example-ec2" {
 
   user_data = <<-EOF
               #!/bin/bash
-              sudo yum -y install nginx
-              systemctl start nginx
-              systemctl enable nginx
+              sudo yum update -y
+              sudo amazon-linux-extras enable epel -y
+              sudo yum install epel-release -y
+              sudo yum install nginx -y
+              sudo systemctl start nginx.service
               EOF
 
   tags = {
@@ -137,7 +147,7 @@ resource "aws_instance" "example-ec2" {
   }
 }
 
-resource aws_s3_bucket teraform_state {
+resource "aws_s3_bucket" "teraform_state" {
   bucket = "teraform-state-haashim"
 
   lifecycle {
