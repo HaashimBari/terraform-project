@@ -7,15 +7,15 @@ terraform {
   }
 }
 
-terraform {
-  backend "s3" {
-    bucket = "teraform-state-haashim"
-    key    = "global/s3/terraform.tfstate"
-    region = "eu-west-1"
-    dynamodb_table = "terraform_state_locking"
-    encrypt = true
-  }
-}
+# terraform {
+#   backend "s3" {
+#     bucket = "teraform-state-haashim"
+#     key    = "global/s3/terraform.tfstate"
+#     region = "eu-west-1"
+#     dynamodb_table = "terraform_state_locking"
+#     encrypt = true
+#   }
+# }
 
 resource "aws_vpc" "prod-vpc" {
   cidr_block = "10.0.0.0/16"
