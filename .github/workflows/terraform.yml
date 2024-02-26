@@ -27,7 +27,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-        aws-region: us-east-1
+        aws-region: eu-west-1
         
     - name: Checkout
       uses: actions/checkout@v3
@@ -39,18 +39,18 @@ jobs:
        echo "Running Terraform init"
        terraform init
 
-    # - name: Terraform Plan
-    #   run: |
-    #    echo "Running Terraform plan"
-    #    terraform plan -input=false
-      
-    # - name: Terraform Apply
-    #   run: |
-    #    echo "Running Terraform Apply"
-    #    terraform apply -auto-approve -input=false
-
-    - name: Terraform Destroy
+    - name: Terraform Plan
       run: |
-        echo "Running Terraform Destroy"
-        terraform destroy -auto-approve
+       echo "Running Terraform plan"
+       terraform plan -input=false
+      
+    - name: Terraform Apply
+      run: |
+       echo "Running Terraform Apply"
+       terraform apply -auto-approve -input=false
+
+    # - name: Terraform Destroy
+    #   run: |
+    #     echo "Running Terraform Destroy"
+    #     terraform destroy -auto-approve
   

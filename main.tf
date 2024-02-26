@@ -126,8 +126,8 @@ resource "aws_security_group" "prod-SG" {
 }
 
 resource "aws_instance" "example-ec2" {
-  ami           = "ami-0f5ecca86cd7303b0"
-  instance_type = "t4g.micro"
+  ami           = "ami-013898da85dead62b"
+  instance_type = "t2.micro"
   associate_public_ip_address = "true"
   subnet_id = aws_subnet.public-subnet-1.id
   security_groups = [aws_security_group.prod-SG.id]
